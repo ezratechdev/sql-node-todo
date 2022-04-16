@@ -3,6 +3,7 @@ import http from "http";
 import sql from "mysql";
 import { mysqlData } from "./services/mysql";
 import Auth from "./routes/Auth";
+import Todo from "./routes/Todo";
 
 
 const app = express();
@@ -26,6 +27,7 @@ app.use(express.static(__dirname + "/public"));
 
 // custom paths
 app.use("/auth" , Auth);
+app.use("/todo" , Todo);
 
 
 
