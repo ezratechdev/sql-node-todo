@@ -15,8 +15,9 @@ export const verify = ({ token , op }:{
     token:string | any,
     op:string | any,
 })=>{
-    const secretKey = (op == "auth") ? "authkey" : (op == "reset") ? "resetkey" : (op == "verify") ? "verifykey" : "aWontWorkKeyBecauseIDoNotKnowWhatOperationThisIs";
-    const {id , operation} = jwt.verify(token , secretKey);
+    console.log(op);
+    const secretKey:string = (op == "auth") ? "authkey" : (op == "reset") ? "resetkey" : (op == "verify") ? "verifykey" : "aWontWorkKeyBecauseIDoNotKnowWhatOperationThisIs";
+    const {id , operation} = jwt.verify(token , `${secretKey}`);
     if((id && operation) && op === operation){
         return {
             id,

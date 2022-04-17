@@ -42,7 +42,7 @@
                 <h1>Register</h1>
             </div>
             <div class="form-content">
-                <form>
+                <form id="SignupForm">
                     <div class="form-group">
                         <label for="username">Username</label>
                         <input type="text" name="RegUsername" required />
@@ -72,7 +72,6 @@
                 panelTwo = $('.form-panel.two')[0].scrollHeight;
 
             $('.form-panel.two').not('.form-panel.two.active').on('click', function (e) {
-                e.preventDefault();
 
                 $('.form-toggle').addClass('visible');
                 $('.form-panel.one').addClass('hidden');
@@ -83,7 +82,6 @@
             });
 
             $('.form-toggle').on('click', function (e) {
-                e.preventDefault();
                 $(this).removeClass('visible');
                 $('.form-panel.one').removeClass('hidden');
                 $('.form-panel.two').removeClass('active');

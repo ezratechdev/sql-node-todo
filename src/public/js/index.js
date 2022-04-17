@@ -1,6 +1,4 @@
 const checkForToken = () => {
-    console.log(localStorage.getItem("authkey"));
-    console.log(sessionStorage.getItem("authkey"));
     const token = (localStorage.getItem("authkey")) ? localStorage.getItem("authkey") : sessionStorage.getItem("authkey") ? sessionStorage.getItem("authkey") : null;
     if (!token) return {
         token: null,
@@ -10,7 +8,6 @@ const checkForToken = () => {
         token,
         error: false,
     };
-    // localStorage.
 }
 
 
@@ -43,18 +40,16 @@ const ServiceWorker = async ({ url, method, token, data }) => {
 const validateToken = async () => {
     const { token, error } = checkForToken();
     if (!error) {
-        const {error , results} =  await ServiceWorker({
+        const dataReply =  await ServiceWorker({
             url: `/auth/verifyMe`,
             method: "POST",
             token,
             data: undefined,
         });
-        if(!error){
-            console.log(results);
+        if(!dataReply.error){
+            window.location.href = "./html/todo.html";
         }
-        console.log(results);
     }
-    console.log(token , error);
 }
 const LoginForm = document.getElementById("LoginForm");
 const HandlingLogin = () => {
@@ -76,16 +71,51 @@ const HandlingLogin = () => {
             })
             if (!error && results.status == 200){
                 const { message , token } = results;
+                LoginForm.reset();
                 if (!check) {
-                    localStorage.setItem("authtoken",token);
+                    localStorage.setItem("authkey",token);
                 }else{
-                    sessionStorage.setItem("authtoken",token);
+                    sessionStorage.setItem("authkey",token);
                 }
+                setTimeout(() => window.location.href = "./html/todo.html" , 3000);
             } else console.log(results.message);
 
         }
     });
 }
 
-HandlingLogin();
-window.onload = (event) => validateToken();
+// handle signup
+const SignupForm = document.getElementById("SignupForm");
+const HandlingSignup = ()=>{
+    SignupForm.addEventListener("submit" , async event =>{
+        event.preventDefault();
+        const { RegUsername , RegEmail , RegPassword , Regcpassword } = SignupForm;
+        if(RegPassword.value === Regcpassword.value){
+            const username = RegUsername.value
+            const email = RegEmail.value;
+            const password = RegPassword.value;
+            const {error , results } = await ServiceWorker({
+                url: `/auth/signup`,
+                method: 'POST',
+                token: undefined,
+                data: {
+                    email,
+                    username,
+                    password,
+                }
+            });
+            if (!error && results.status == 200){
+                const { message , token } = results;
+                localStorage.setItem("authkey",token);
+                SignupForm.reset();
+                setTimeout(() => window.location.href = "./html/todo.html" , 3000);
+            } else console.log(results.message);
+        }
+    });
+}
+
+window.onload = (event) => {
+    HandlingLogin();
+    HandlingSignup();
+    validateToken();
+}

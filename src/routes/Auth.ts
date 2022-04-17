@@ -63,9 +63,7 @@ Auth.post("/login" , (req:any , res:any)=>{
         if(error){
             throw new Error(`Mysql error : login/ general login \n ${error}`);
         }
-        console.log(results.length);
         if(results.length > 0 && results.length < 2){
-            console.log(results);
             const { email , username , password , userID } = results[0];
             if(await crypt.compare(passedPass,password)){
                 const token = sign({id:userID, operation:"auth" });
@@ -84,7 +82,7 @@ Auth.post("/login" , (req:any , res:any)=>{
         res.json({
             status:404,
             message:"User not found",
-        })
+        });
     });
 });
 
@@ -92,14 +90,29 @@ Auth.post("/verifyMe" , [Protect] , (req , res)=>{
     let { id , operation , error } = req.protect;
     if(!(id || operation) && error){
         res.json({
-            id:null,
             error:true,
+            username:null,
         })
     }
-    res.json({
-        id,
-        error:false,
-    })
+    const getDataQuery = "SELECT username FROM users WHERE users.userID='"+id+"'";
+    connector.query(getDataQuery , (error , results , fields) =>{
+        if(error){
+            throw new Error(`Mysql error : verifyMe/ general  \n ${error}`);
+        }
+        if(results.length > 0 && results.length < 2){
+            const { username } = results[0];
+            res.json({
+                error:false,
+                username,
+            });
+        }else{
+            res.json({
+                error:true,
+                username:null,
+    
+            });
+        }
+    });
 });
 
 
