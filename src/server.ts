@@ -4,6 +4,7 @@ import sql from "mysql";
 import { mysqlData } from "./services/mysql";
 import Auth from "./routes/Auth";
 import Todo from "./routes/Todo";
+import path from "path";
 
 
 const app = express();
@@ -29,6 +30,11 @@ app.use(express.static(__dirname + "/public"));
 app.use("/auth" , Auth);
 app.use("/todo" , Todo);
 
+
+// render default page
+app.get("/" , (req , res)=>{
+    res.sendFile("index.html")
+})
 
 
 // default

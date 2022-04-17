@@ -3,6 +3,7 @@ import crypt from "bcryptjs";
 import{ connector} from "../components/connect";
 import { sign } from "../components/jwt";
 import { v4 as uuidv4 } from 'uuid';
+import Protect from "../middlewares/Protect";
 
 
 // Signup
@@ -49,19 +50,22 @@ Auth.post("/signup" , (req , res)=>{
 });
 
 
-Auth.post("/login" , (req , res)=>{
+Auth.post("/login" , (req:any , res:any)=>{
     const passedEmail  = req.body.email;
     const passedPass = req.body.password;
-    console.log(passedEmail , passedPass);
+    console.log(req.body);
+    console.log(passedEmail,passedPass);
     if(!((passedEmail && passedPass) && (passedPass.length >= 6 && passedEmail.length >= 5 && passedEmail.includes("@") && passedEmail.includes(".")))){
-        throw new Error("Some || all details were not passed or details were not correctly passed");
+        throw new Error("Login : Some || all details were not passed or details were not correctly passed");
     }
     const loginQuerry = "SELECT * from users WHERE users.email='"+passedEmail+"'";
     connector.query(loginQuerry , async (error:any , results , fields)=>{
         if(error){
             throw new Error(`Mysql error : login/ general login \n ${error}`);
         }
-        if(results.length > 0){
+        console.log(results.length);
+        if(results.length > 0 && results.length < 2){
+            console.log(results);
             const { email , username , password , userID } = results[0];
             if(await crypt.compare(passedPass,password)){
                 const token = sign({id:userID, operation:"auth" });
@@ -79,9 +83,23 @@ Auth.post("/login" , (req , res)=>{
         }
         res.json({
             status:404,
-            message:"Conflicting users found kindly try again"
+            message:"User not found",
         })
     });
+});
+
+Auth.post("/verifyMe" , [Protect] , (req , res)=>{
+    let { id , operation , error } = req.protect;
+    if(!(id || operation) && error){
+        res.json({
+            id:null,
+            error:true,
+        })
+    }
+    res.json({
+        id,
+        error:false,
+    })
 });
 
 

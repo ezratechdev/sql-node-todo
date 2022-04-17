@@ -4,6 +4,7 @@ const Protect = (req:any , res , next) => {
     try{
         if(req.headers.authorization && req.headers.authorization.startsWith("Bearer")){
             token = req.headers.authorization.split(" ")[1];
+            console.log(token)
             let op = "auth";
             const tokenData = verify({ token , op });
             if(!tokenData.error && tokenData.operation == op){

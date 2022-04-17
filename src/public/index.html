@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth</title>
+    <link rel="stylesheet" href="./css/index.css">
+</head>
+
+<body>
+    <!-- Form-->
+    <div class="form">
+        <div class="form-toggle"></div>
+        <div class="form-panel one">
+            <div class="form-header">
+                <h1>Login</h1>
+            </div>
+            <div class="form-content">
+                <form id="LoginForm">
+                    <div class="form-group">
+                        <label for="username">Email</label>
+                        <input type="email" name="LoginEmail" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" name="LoginPassword" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-remember">
+                            <input type="checkbox" name="CheckBox" />Remember Me</label><a class="form-recovery" href="#">Forgot
+                            Password?</a></div>
+                    <div class="form-group">
+                        <button type="submit">Log In</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="form-panel two">
+            <div class="form-header">
+                <h1>Register</h1>
+            </div>
+            <div class="form-content">
+                <form>
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" name="RegUsername" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" name="RegEmail" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" name="RegPassword" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="cpassword">Confirm Password</label>
+                        <input type="password" name="Regcpassword" required />
+                    </div>
+                    <div class="form-group">
+                        <button type="submit">Register</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="./js/jquery.js"></script>
+    <script>
+        $(document).ready(function () {
+            var panelOne = $('.form-panel.two').height(),
+                panelTwo = $('.form-panel.two')[0].scrollHeight;
+
+            $('.form-panel.two').not('.form-panel.two.active').on('click', function (e) {
+                e.preventDefault();
+
+                $('.form-toggle').addClass('visible');
+                $('.form-panel.one').addClass('hidden');
+                $('.form-panel.two').addClass('active');
+                $('.form').animate({
+                    'height': panelTwo
+                }, 200);
+            });
+
+            $('.form-toggle').on('click', function (e) {
+                e.preventDefault();
+                $(this).removeClass('visible');
+                $('.form-panel.one').removeClass('hidden');
+                $('.form-panel.two').removeClass('active');
+                $('.form').animate({
+                    'height': panelOne
+                }, 200);
+            });
+        });
+    </script>
+    <script src="./js/index.js"></script>
+</body>
+
+</html>
